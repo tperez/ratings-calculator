@@ -1,8 +1,5 @@
 (ns ratings-calculator.core
-  (:gen-class))
-
-(defn winners-rating-better-than-loser
-  ([winner, loser] (>= winner loser)))
+  (:use clojure.contrib.math))
 
 (defn calculate-new-ratings
   ([winner, loser, adjustment]
@@ -20,31 +17,24 @@
                        [237 1 45]
                        [nil 0 50]])
 
-(defn calculate-expected-ranking-helper
-  ([winner, loser, lst]
+(defn calculate-ranking-helper
+  ([winner, loser, lst, nth-position]
      (cond
       (or (nil? (first (first lst)))
-          (<= (- winner loser) (first (first lst))))
-      (calculate-new-ratings winner loser (second (first lst)))
-      :else (calculate-expected-ranking-helper winner loser (rest lst)))))
+          (<= (abs (- winner loser)) (first (first lst))))
+      (calculate-new-ratings winner loser (nth (first lst) nth-position))
+      :else (calculate-ranking-helper winner loser (rest lst) nth-position))))
 
 (defn calculate-expected-ranking
   ([winner, loser]
-     (calculate-expected-ranking-helper winner loser expected-ratings)))
-
-
-(defn calculate-upset-ranking-helper
-  ([winner, loser, lst]
-     (cond
-      (or (nil? (first (first lst)))
-          (<= (- loser winner) (first (first lst))))
-      (calculate-new-ratings winner loser (nth (first lst) 2))
-      :else (calculate-upset-ranking-helper winner loser (rest lst)))))
+     (calculate-ranking-helper winner loser expected-ratings 1)))
 
 (defn calculate-upset-ranking
   ([winner, loser]
-     (calculate-upset-ranking-helper winner loser expected-ratings)))
+     (calculate-ranking-helper winner loser expected-ratings 2)))
 
+(defn winners-rating-better-than-loser
+  ([winner, loser] (>= winner loser)))
 
 (defn adjust-ratings
   ([winner, loser] (if (winners-rating-better-than-loser winner loser)
@@ -55,5 +45,4 @@
   (println "Welcome to the ratings calculator!")
   (println (adjust-ratings (Integer/parseInt (first args))
                            (Integer/parseInt (second args)))))
-
 
