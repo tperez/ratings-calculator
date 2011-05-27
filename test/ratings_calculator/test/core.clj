@@ -13,7 +13,7 @@
   (is (call-adjust-rating 300 300 8)))
 
 (deftest test-winner-higher-ranked-than-loser
-  (is (call-adjust-rating 300 (- 300 12)  8))
+  (is (call-adjust-rating 300 (- 300 12) 8))
   (is (call-adjust-rating 300 (- 300 13)  7))
   (is (call-adjust-rating 300 (- 300 37)  7))
   (is (call-adjust-rating 300 (- 300 38)  6))
@@ -33,7 +33,6 @@
   (is (call-adjust-rating 300 (- 300 213) 1))
   (is (call-adjust-rating 300 (- 300 237) 1))
   (is (call-adjust-rating 300 (- 300 238) 0)))
-
 
 (deftest test-winner-lower-ranked-than-loser
   (is (call-adjust-rating (- 300 12)  300 8))
