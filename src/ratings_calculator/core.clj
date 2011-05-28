@@ -19,11 +19,12 @@
 
 (defn calculate-ranking-helper
   ([winner, loser, lst, nth-position]
-     (cond
-      (or (nil? (first (first lst)))
-          (<= (abs (- winner loser)) (first (first lst))))
-      (calculate-new-ratings winner loser (nth (first lst) nth-position))
-      :else (calculate-ranking-helper winner loser (rest lst) nth-position))))
+     (let [rank (first lst)]
+         (cond
+          (or (nil? (first rank))
+              (<= (abs (- winner loser)) (first rank)))
+          (calculate-new-ratings winner loser (nth rank nth-position))
+          :else (calculate-ranking-helper winner loser (rest lst) nth-position)))))
 
 (defn calculate-expected-ranking
   ([winner, loser]
